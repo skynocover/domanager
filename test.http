@@ -1,0 +1,34 @@
+@url=http://localhost
+
+
+######
+POST {{url}}:2019/load
+Content-Type: application/json
+
+{
+  "apps": {
+    "http": {
+      "servers": {
+        "example": {
+          "listen": [":2015"],
+          "routes": [
+            {
+              "handle": [
+                {
+                  "handler": "static_response",
+                  "body": "new world!"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+
+###
+GET {{url}}:2015
+
+######
+GET {{url}}:2019/config/
