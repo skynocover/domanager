@@ -5,14 +5,14 @@ import { AppContext } from './AppContext';
 import * as ReactRouterDOM from 'react-router-dom';
 import { MainPage } from './pages/MainPage';
 import { LaunchPage, LoginPage, NotFoundPage } from './pages/LaunchPage';
-import { ContactPage } from './pages/ContactPage';
+import { ServerPage } from './pages/ServerPage';
 
 const menus = [
   {
-    key: '/contactus',
-    title: '聯絡內容',
+    key: '/server',
+    title: 'server設定',
     icon: 'fa fa-user',
-    component: <ContactPage />,
+    component: <ServerPage />,
   },
 ];
 
@@ -25,12 +25,7 @@ const App = () => {
 
         {menus.map((item) => (
           <ReactRouterDOM.Route key={item.key} path={item.key}>
-            <MainPage
-              menus={menus}
-              title={item.title}
-              icon={item.icon}
-              content={item.component}
-            />
+            <MainPage menus={menus} title={item.title} icon={item.icon} content={item.component} />
           </ReactRouterDOM.Route>
         ))}
 

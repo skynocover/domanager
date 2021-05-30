@@ -4,12 +4,7 @@ import * as antd from 'antd';
 import firebase from 'firebase/app';
 
 import { Notification } from './components/Notification';
-import {
-  ApolloClient,
-  InMemoryCache,
-  NormalizedCacheObject,
-  DefaultOptions,
-} from '@apollo/client';
+import { ApolloClient, InMemoryCache, NormalizedCacheObject, DefaultOptions } from '@apollo/client';
 
 interface AppContextProps {
   loginPage: string;
@@ -20,6 +15,9 @@ interface AppContextProps {
   setAccount: (value: string) => void;
   isAdmin: boolean;
   setIsAdmin: (value: boolean) => void;
+
+  dataSource: server[];
+  setDataSource: React.Dispatch<React.SetStateAction<server[]>>;
 
   fetch: (
     method: 'get' | 'post' | 'put' | 'delete' | 'patch',
@@ -45,13 +43,30 @@ const firebaseConfig = {};
 firebase.initializeApp(firebaseConfig);
 export const app = firebase;
 
+export interface server {
+  id: number;
+  domain: string;
+  name: string;
+  port: string;
+  handlers: handler[];
+}
+
+export interface handler {
+  id: number;
+  type: string;
+  routes: string | null;
+  target: string;
+}
+
 const AppProvider = ({ children }: AppProviderProps) => {
   const [loginPage] = React.useState('/#/login');
-  const [homePage] = React.useState('/#/contactus');
+  const [homePage] = React.useState('/#/server');
   const [modal, setModal] = React.useState<any>(null);
 
   const [account, setAccount] = React.useState('');
   const [isAdmin, setIsAdmin] = React.useState(false);
+
+  const [dataSource, setDataSource] = React.useState<server[]>([]); //coulmns data
 
   /////////////////////////////////////////////////////
 
@@ -111,18 +126,17 @@ const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   const login = async (account: string, password: string): Promise<any> => {
-    // const data = await fetch('post', `/api/account/login`, {
-    //   account,
-    //   password,
-    //   code,
-    // });
+    const data = await fetch('post', `/api/login`, {
+      account,
+      password,
+    });
 
     setAccount(account);
 
-    const data = { errorCode: '0' };
+    // const data = { errorCode: '0' };
 
     if (data) {
-      if (data.errorCode === '0') {
+      if (data.errorCode === 0) {
         Notification.add('success', '驗證成功');
         window.location.href = homePage;
       } else {
@@ -158,6 +172,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
         setAccount,
         isAdmin,
         setIsAdmin,
+        dataSource,
+        setDataSource,
 
         fetch,
 
