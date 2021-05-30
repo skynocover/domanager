@@ -1,0 +1,40 @@
+kind: pipeline
+type: docker #在docker環境中執行
+name: test #自定義pipleline名稱
+
+steps: #工作列表
+  - name: build-image #自訂工作名稱
+    when:
+      event: tag
+    pull: if-not-exists #要不要pull指定的image
+    image: plugins/docker #指定要拿來執行command的image或者plugin
+    settings:
+      registry: registry.hub.docker.com #dockerhub registry url
+      repo: registry.hub.docker.com/credot/domanager_fe #打包完要上傳的docker repo名稱
+      dockerfile: Dockerfile #根據指定的Docker file打包image
+      username:
+        from_secret: hubname
+      password:
+        from_secret: hubsecret
+      tags:
+        - latest
+        - ${DRONE_TAG}
+
+  - name: ssh-deploy
+    when:
+      event: tag
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: sshhost
+      username:
+        from_secret: sshname
+      password:
+        from_secret: sshkey
+      port: 22
+      command_timeout: 2m
+      script:
+        - cd/home/cd83207153/domanager/fe # or whereever you put your `deploy.sh`
+        - docker-compose down
+        - docker pull credot/domanager_fe
+        - docker-compose up -d
