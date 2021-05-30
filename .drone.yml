@@ -29,12 +29,12 @@ steps: #工作列表
         from_secret: sshhost
       username:
         from_secret: sshname
-      password:
+      key:
         from_secret: sshkey
       port: 22
       command_timeout: 2m
       script:
-        - cd/home/cd83207153/domanager/fe # or whereever you put your `deploy.sh`
-        - docker-compose down
-        - docker pull credot/domanager_fe
-        - docker-compose up -d
+        - cd /home/cd83207153/domanager/fe # or whereever you put your `deploy.sh`
+        - sudo docker-compose down
+        - sudo docker pull credot/domanager_fe
+        - sudo docker-compose up -d
