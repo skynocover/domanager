@@ -24,7 +24,7 @@ const LoginPage = () => {
   const LoginForm = () => {
     return (
       <antd.Form
-        initialValues={{ account: 'admin', password: '123456' }}
+        // initialValues={{ account: 'admin', password: '123456' }}
         onFinish={(values) => appCtx.login(values.account, values.password)}
       >
         <antd.Form.Item name="account" rules={[{ required: true, message: '帳號不可以空白!' }]}>
